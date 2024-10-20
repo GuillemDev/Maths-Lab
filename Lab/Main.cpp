@@ -1,69 +1,72 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
-int* ForwardElimination(int* mat, int size) {
+vector<vector<int>> ForwardThreeLoops(vector<vector<int>> mat) {
 
-	int n = size;
+	int matSize = mat.size();
 
-	for (int column = 1; column < n - 1; column++)
+	for (size_t column = 0; column < matSize; column++)
 	{
-		for (int row = column + 1; row < column - 1; row++)
+		int pivot = mat[column][column];
+
+		for (size_t i = column; i < matSize + 1; i++)
 		{
-			for (int k = column; k < n + 1; k++)
+			mat[column][i] /=  pivot;
+		}
+
+		for (size_t row = column + 1; row < matSize; row++)
+		{
+			int subPivot = mat[row][column];
+
+			for (size_t something = column; something < matSize; something++)
 			{
-				mat[row,k] = mat[column,column] * mat[row,k] - mat[row,column] * mat[column, k];
+				mat[row][something] = mat[row][column] - subPivot * mat[column][something];
 			}
 		}
 	}
 
 	return mat;
+
 }
-
-
 
 int main() {
 
-	int* mat = {1,2,3,4,5,6,7,8,9};
+	vector<vector<int>> mat(5, vector<int>(6));
 
-	mat = ForwardElimination(mat,3);
+	for (size_t i = 0; i < 5; i++)
+	{
+		for (size_t j = 0; j < 6; j++)
+		{
+			mat[i][j] = (rand() % 10) + 1;
+		}
+	}
 
-	return 0;
+	printf("Before : \n");
+
+	for (size_t i = 0; i < 5; i++)
+	{
+		for (size_t j = 0; j < 6; j++)
+		{
+			printf("%d",mat[i][j]);
+		}
+		printf("\n");
+	}
+
+	ForwardThreeLoops(mat);
+
+	printf("After : \n");
+
+	for (size_t i = 0; i < 5; i++)
+	{
+		for (size_t j = 0; j < 6; j++)
+		{
+			printf("%d", mat[i][j]);
+		}
+		printf("\n");
+	}
 }
-
-
-//
-//void Gauss(int mat[], int n, int m) {
-//
-//	int churro;
-//
-//	for(int i = n, i < 1 step - 1,i++){
-//
-//		churro = 0;
-//
-//		for(int j = i + 1, j < n step 1, j++){
-//			churro = churro + A(i, j).X(j);
-//		}
-//	}
-//
-//}
-
-
-			//for column = 1 to n - 1
-
-			//	for row = column + 1 to n
-
-			//		for something = 1 to n + 1
-			//			A(r, s) = A(c, c)(pivot).A(r, s) - A(r, c)(sub pivot).A(c, s)
-
-
-
-			//			for column = 1 to n - 1
-			//				pivot = A(c, c)
-
-			//				for row = column + 1 to n
-			//					subpivot = A(row, column)
-			//					A(r, s) = A(c, c)(pivot).A(r, s) - A(r, c)(sub pivot).A(c, s)
 
